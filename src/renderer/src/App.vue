@@ -1,26 +1,51 @@
 <script setup lang="ts">
-import Versions from './components/Versions.vue'
+// Import the cat image
+// import catIcon from 'resources/catIcon.png'
 
-const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
+/*
+// Add a function to make the window draggable
+const handleMouseDown = (event: MouseEvent): void => {
+  window.electron.ipcRenderer.send('mouse-down', { x: event.clientX, y: event.clientY })
+}
+*/
+
+import Cat from './components/Cat.vue'
 </script>
 
 <template>
-  <img alt="logo" class="logo" src="./assets/electron.svg" />
-  <div class="creator">Powered by electron-vite</div>
-  <div class="text">
-    Build an Electron app with
-    <span class="vue">Vue</span>
-    and
-    <span class="ts">TypeScript</span>
-  </div>
-  <p class="tip">Please try pressing <code>F12</code> to open the devTool</p>
-  <div class="actions">
-    <div class="action">
-      <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">Documentation</a>
+  <div class="app-container">
+    <div class="cat-container">
     </div>
-    <div class="action">
-      <a target="_blank" rel="noreferrer" @click="ipcHandle">Send IPC</a>
-    </div>
+
+    <!-- Add the cat component -->
+    <Cat />
   </div>
-  <Versions />
 </template>
+
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background-color: transparent;
+}
+
+.cat-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+}
+
+.cat-image {
+  width: 100%;     /* Make the image fill the entire container */
+  height: 100%;    /* Make the image fill the entire container */
+  object-fit: contain; /* Ensures the image maintains its aspect ratio */
+  -webkit-user-drag: element;
+  cursor: pointer;
+}
+</style>

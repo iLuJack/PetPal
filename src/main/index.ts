@@ -1,25 +1,41 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, nativeImage } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
+// it's better to use absolute path
+// import catIcon from 'absoulte-path-to-cat-icon'
 
 function createWindow(): void {
-  // Create the browser window.
+
+
+
+  // Create the browser window with the exact cat icon dimensions
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
-    show: false,
-    autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    width: 200,
+    height: 200,
+    transparent: true,
+    frame: false,
+    alwaysOnTop: true,
+    resizable: false,
+    skipTaskbar: true,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
     }
   })
+  console.log(mainWindow.getBounds())
 
-  mainWindow.on('ready-to-show', () => {
+  // Remove this to not show window until loaded
+  // mainWindow.on('ready-to-show', () => {
+  //   mainWindow.show()
+  // })
+
+  // Show window once loaded
+  mainWindow.once('ready-to-show', () => {
     mainWindow.show()
   })
+
+  // Allow dragging the cat around
+  mainWindow.setIgnoreMouseEvents(false)
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
