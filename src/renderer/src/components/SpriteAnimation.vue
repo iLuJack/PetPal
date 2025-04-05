@@ -1,4 +1,5 @@
-// src/renderer/src/components/SpriteAnimation.vue
+// this template is for the animation of the cat (sprite sheet), and the detailed implementation is
+in the following script section
 <template>
   <div
     class="sprite-container"
@@ -83,6 +84,12 @@ watch(
 )
 
 onMounted(() => {
+  console.log('SpriteAnimation mounted with props:', {
+    frameWidth: props.frameWidth,
+    frameHeight: props.frameHeight,
+    spriteSheet: props.spriteSheet.slice(0, 50) + '...',
+    row: props.row
+  })
   if (props.isPlaying) {
     startAnimation()
   }
@@ -91,6 +98,18 @@ onMounted(() => {
 onUnmounted(() => {
   stopAnimation()
 })
+
+watch(
+  [currentFrame, currentRow],
+  ([frame, row]) => {
+    console.log('Sprite animation frame:', {
+      frame,
+      row,
+      bgPosition: `${-frame * props.frameWidth}px ${-row * props.frameHeight}px`
+    })
+  },
+  { immediate: true }
+)
 </script>
 
 <style scoped>

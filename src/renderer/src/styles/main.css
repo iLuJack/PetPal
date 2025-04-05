@@ -14,16 +14,6 @@
   image-rendering: pixelated; /* Keep pixel art crisp */
 }
 
-/* Cat container styles */
-.cat-container {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: transparent;
-}
-
 /* Common cat styles */
 .cat {
   will-change: transform, left, top;

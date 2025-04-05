@@ -16,6 +16,8 @@ function createWindow(): void {
     alwaysOnTop: true,
     resizable: false,
     skipTaskbar: true,
+    x: 0, // Explicitly position at left edge
+    y: 0, // Explicitly position at top edge
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
