@@ -64,17 +64,23 @@ const stopAnimation = () => {
   }
 }
 
-watch(() => props.isPlaying, (isPlaying) => {
-  if (isPlaying) {
-    startAnimation()
-  } else {
-    stopAnimation()
+watch(
+  () => props.isPlaying,
+  (isPlaying) => {
+    if (isPlaying) {
+      startAnimation()
+    } else {
+      stopAnimation()
+    }
   }
-})
+)
 
-watch(() => props.row, (newRow) => {
-  currentRow.value = newRow
-})
+watch(
+  () => props.row,
+  (newRow) => {
+    currentRow.value = newRow
+  }
+)
 
 onMounted(() => {
   if (props.isPlaying) {

@@ -9,8 +9,7 @@ export default defineConfig({
     resolve: {
       alias: {
         '@': resolve('src'),
-        '$': resolve('.'),
-        '@assets': resolve('resources')
+        '#': resolve('src/renderer/src')
       }
     }
   },
@@ -19,23 +18,17 @@ export default defineConfig({
     resolve: {
       alias: {
         '@': resolve('src'),
-        '$': resolve('.'),
-        '@assets': resolve('resources')
+        '#': resolve('src/renderer/src')
       }
     }
   },
   renderer: {
     resolve: {
       alias: {
-        '@renderer': resolve('src/renderer/src'),
         '@': resolve('src'),
-        '$': resolve('.'),
-        '@assets': resolve('resources')
+        '#': resolve('src/renderer/src')
       }
     },
-    plugins: [
-      vue(),
-      tailwindcss()
-    ]
+    plugins: [vue(), tailwindcss()]
   }
 })

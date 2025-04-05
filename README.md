@@ -3,6 +3,7 @@
 An Electron application with Vue and TypeScript
 
 ## Demo
+
 ![](resources/demo/demo-v0.gif?raw=true)
 
 ## Recommended IDE Setup

@@ -6,8 +6,10 @@
       position: 'absolute',
       left: `${position.x}px`,
       top: `${position.y}px`,
-      transform: `scale(2)`, /* Scale for size */
+      transform: `scale(2)` /* Scale for size */
     }"
+    @mouseenter="handleMouseEnter"
+    @mouseleave="handleMouseLeave"
   >
     <SpriteAnimation
       :sprite-sheet="catSpriteSheet"
@@ -68,32 +70,70 @@ const currentAnimationRow = computed(() => {
   if (state.value === 'walking') {
     // Select the correct row based on direction
     switch (direction.value) {
-      case 'down': return ROWS.WALK_DOWN
-      case 'right': return ROWS.WALK_RIGHT
-      case 'up': return ROWS.WALK_UP
-      case 'left': return ROWS.WALK_LEFT
-      default: return ROWS.WALK_DOWN
+      case 'down':
+        return ROWS.WALK_DOWN
+      case 'right':
+        return ROWS.WALK_RIGHT
+      case 'up':
+        return ROWS.WALK_UP
+      case 'left':
+        return ROWS.WALK_LEFT
+      default:
+        return ROWS.WALK_DOWN
     }
   } else if (state.value === 'sleeping') {
     return sleepingPose.value === 0
-      ? (Math.random() > 0.5 ? ROWS.SLEEP_SITTING_1 : ROWS.SLEEP_SITTING_2) // Alternate between sitting poses
+      ? Math.random() > 0.5
+        ? ROWS.SLEEP_SITTING_1
+        : ROWS.SLEEP_SITTING_2 // Alternate between sitting poses
       : ROWS.SLEEP_LYING // Lying down pose
   } else if (state.value === 'transitioning') {
     return ROWS.TRANSITIONING
   } else {
     // Idle state - use the first frame of walking in current direction
     switch (direction.value) {
-      case 'down': return ROWS.WALK_DOWN
-      case 'right': return ROWS.WALK_RIGHT
-      case 'up': return ROWS.WALK_UP
-      case 'left': return ROWS.WALK_LEFT
-      default: return ROWS.WALK_DOWN
+      case 'down':
+        return ROWS.WALK_DOWN
+      case 'right':
+        return ROWS.WALK_RIGHT
+      case 'up':
+        return ROWS.WALK_UP
+      case 'left':
+        return ROWS.WALK_LEFT
+      default:
+        return ROWS.WALK_DOWN
     }
   }
 })
 
+// Make the cat region interactive when hovering (optional)
+function handleMouseEnter() {
+  // Uncomment this if you want interactivity on hover
+  // window.electron.ipcRenderer.send('toggle-interaction', false)
+}
+
+function handleMouseLeave() {
+  // window.electron.ipcRenderer.send('toggle-interaction', true)
+}
+
+// Screen bounds
+const screenBounds = {
+  width: window.innerWidth,
+  height: window.innerHeight
+}
+
+// Update screen bounds on resize
+window.addEventListener('resize', () => {
+  screenBounds.width = window.innerWidth
+  screenBounds.height = window.innerHeight
+})
+
 // Movement functions
 function walkTo(x: number, y: number, callback?: () => void) {
+  // Ensure target is within screen bounds
+  x = Math.max(0, Math.min(screenBounds.width - 64, x))
+  y = Math.max(0, Math.min(screenBounds.height - 64, y))
+
   // Determine direction based on target position
   const dx = x - position.value.x
   const dy = y - position.value.y
@@ -116,15 +156,11 @@ function walkTo(x: number, y: number, callback?: () => void) {
     position.value.y += moveY
 
     // Check if we've reached or passed the target
-    if ((dx > 0 && position.value.x >= x) ||
-        (dx < 0 && position.value.x <= x) ||
-        (dx === 0)) {
+    if ((dx > 0 && position.value.x >= x) || (dx < 0 && position.value.x <= x) || dx === 0) {
       position.value.x = x
     }
 
-    if ((dy > 0 && position.value.y >= y) ||
-        (dy < 0 && position.value.y <= y) ||
-        (dy === 0)) {
+    if ((dy > 0 && position.value.y >= y) || (dy < 0 && position.value.y <= y) || dy === 0) {
       position.value.y = y
     }
 
@@ -149,10 +185,13 @@ function sleep() {
     animationSpeed.value = 800 // Slower animation for sleeping
 
     // Wake up after some time
-    setTimeout(() => {
-      state.value = 'idle'
-      animationSpeed.value = 200
-    }, 5000 + Math.random() * 5000) // Sleep for 5-10 seconds
+    setTimeout(
+      () => {
+        state.value = 'idle'
+        animationSpeed.value = 200
+      },
+      5000 + Math.random() * 5000
+    ) // Sleep for 5-10 seconds
   }, 1200) // Time for transition animation to complete
 }
 
@@ -162,8 +201,14 @@ function randomBehavior() {
 
   if (choice < 0.7) {
     // 70% chance to walk
-    const randomX = Math.max(0, Math.min(window.innerWidth - 64, Math.random() * window.innerWidth))
-    const randomY = Math.max(0, Math.min(window.innerHeight - 64, Math.random() * window.innerHeight))
+    const randomX = Math.max(
+      0,
+      Math.min(screenBounds.width - 64, Math.random() * screenBounds.width)
+    )
+    const randomY = Math.max(
+      0,
+      Math.min(screenBounds.height - 64, Math.random() * screenBounds.height)
+    )
     walkTo(randomX, randomY, () => {
       setTimeout(randomBehavior, 1000 + Math.random() * 2000)
     })

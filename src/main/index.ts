@@ -1,17 +1,16 @@
-import { app, shell, BrowserWindow, ipcMain, nativeImage } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, screen } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 // it's better to use absolute path
 // import catIcon from 'absoulte-path-to-cat-icon'
 
 function createWindow(): void {
+  const primaryDisplay = screen.getPrimaryDisplay()
+  const { width, height } = primaryDisplay.workAreaSize
 
-
-
-  // Create the browser window with the exact cat icon dimensions
   const mainWindow = new BrowserWindow({
-    width: 200,
-    height: 200,
+    width,
+    height,
     transparent: true,
     frame: false,
     alwaysOnTop: true,
@@ -22,20 +21,22 @@ function createWindow(): void {
       sandbox: false
     }
   })
-  console.log(mainWindow.getBounds())
 
-  // Remove this to not show window until loaded
-  // mainWindow.on('ready-to-show', () => {
-  //   mainWindow.show()
-  // })
-
-  // Show window once loaded
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
   })
 
-  // Allow dragging the cat around
-  mainWindow.setIgnoreMouseEvents(false)
+  mainWindow.setIgnoreMouseEvents(true, { forward: true })
+
+  // Add an IPC channel to toggle interactivity (for debugging or configuration)
+  ipcMain.on('toggle-interaction', (_, shouldIgnore) => {
+    mainWindow.setIgnoreMouseEvents(shouldIgnore, { forward: true })
+  })
+
+  screen.on('display-metrics-changed', () => {
+    const newSize = screen.getPrimaryDisplay().workAreaSize
+    mainWindow.setSize(newSize.width, newSize.height)
+  })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)

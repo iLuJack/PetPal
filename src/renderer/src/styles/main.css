@@ -1,0 +1,40 @@
+@import '#/styles/base.css';
+
+/* Global app container */
+#app {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background-color: transparent;
+}
+
+/* Common sprite animation styles */
+.sprite-container {
+  display: inline-block;
+  image-rendering: pixelated; /* Keep pixel art crisp */
+}
+
+/* Cat container styles */
+.cat-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+}
+
+/* Common cat styles */
+.cat {
+  will-change: transform, left, top;
+  z-index: 9999;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-size: cover;
+  user-select: none;
+}
